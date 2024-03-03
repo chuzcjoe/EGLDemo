@@ -50,11 +50,3 @@ Java_com_example_egldemo_opengl_NativeOpenGL_nativeSurfaceDestroyed(JNIEnv* env,
     delete eglThread;
     eglThread = nullptr;
 }
-
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_egldemo_MainActivity_stringFromJNI(
-        JNIEnv* env,
-        jobject /* this */) {
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
-}

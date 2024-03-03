@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
  *
  * @author joe.chu@bytedance.com
  */
+
 public class NativeGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     private NativeOpenGL mNativeOpenGL;
