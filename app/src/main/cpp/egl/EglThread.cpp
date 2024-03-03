@@ -15,18 +15,21 @@ EglThread::~EglThread() {
 }
 
 void EglThread::eglThreadImpl(EglThread* eglThread) {
+    LOGD("Enter Thread Impl");
     if (!eglThread) {
         LOGE("thread is null");
         return;
     }
-    std::unique_ptr<EglHelper> eglHelper(new EglHelper);
+    std::unique_ptr<EglHelper> eglHelper(new EglHelper());
     if (eglHelper->initEGL(eglThread->mANativeWindow) == EGL_ERROR) {
         LOGE("eglHelper initEgl error");
         return;
     }
 
     eglThread->isExit = false;
+    LOGD("Enter Rendering");
     while (!eglThread->isExit) {
+        LOGD("Rendering");
         if (eglThread->isCreate) {
             eglThread->isCreate = false;
             eglThread->_onCreate();
@@ -46,7 +49,9 @@ void EglThread::eglThreadImpl(EglThread* eglThread) {
                 usleep(1000000 / 60);
             } else {
                 std::unique_lock<std::mutex> lock(eglThread->mut);
+                LOGD("rendering waiting");
                 eglThread->cond.wait(lock);
+                LOGD("rendering restart");
             }
         }
     }
@@ -77,7 +82,7 @@ void EglThread::setRenderType(int renderType) {
 }
 
 void EglThread::notifyRender() {
-//    std::lock_guard<std::mutex> lock(mut);
+    std::lock_guard<std::mutex> lock(mut);
     cond.notify_one();
 }
 
@@ -90,5 +95,5 @@ void EglThread::callBackOnChange(EglThread::OnChange onChangeFunc) {
 }
 
 void EglThread::callBackOnDraw(EglThread::OnDraw onDrawFunc) {
-    this->_onCreate = onDrawFunc;
+    this->_onDraw = onDrawFunc;
 }
